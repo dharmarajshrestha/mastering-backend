@@ -15,7 +15,6 @@ class Task extends Model
 
     protected $fillable = [
         'name',
-        'title',
         'description',
         'status',
         'user_id',
@@ -28,15 +27,13 @@ class Task extends Model
 
     public function complete()
     {
-        if (!$this->title) {
-
+        if (!$this->name) {
             throw new \Exception(
                 "Task {$this->id} has no title"
             );
         }
 
         if ($this->status === 'completed') {
-
             throw new \Exception(
                 "Task {$this->id} already completed"
             );
@@ -45,7 +42,7 @@ class Task extends Model
         $this->status = 'completed';
     }
 
-    public function rename(string $title)
+    public function rename(string $name)
     {
         if ($this->status === 'completed') {
             throw new \Exception(
@@ -53,6 +50,6 @@ class Task extends Model
             );
         }
 
-        $this->title = $title;
+        $this->name = $name;
     }
 }
