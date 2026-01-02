@@ -3,12 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Services\TaskService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
+    public function __construct(
+        public TaskService $taskService
+    ) {
+        //
+    }
+
     public function index()
     {
         $tasks = Task::simplePaginate(10);
@@ -31,7 +38,7 @@ class TaskController extends Controller
             'user_id' => ['required', 'integer', 'exists:users,id'],
         ]);
 
-        $task = Task::create($validated);
+        $task = $this->taskService->create($validated);
 
         Log::info('Task created notification sent.');
 
@@ -48,9 +55,7 @@ class TaskController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $task->update([
-            'status' => 'completed',
-        ]);
+        $this->taskService->complete($task);
 
         Log::info('Task completed notification sent');
 
