@@ -20,12 +20,6 @@ class TaskController extends Controller
     {
         $tasks = Task::simplePaginate(10);
 
-        if (! $tasks) {
-            return response()->json([
-                'message' => 'No Tasks',
-            ], Response::HTTP_NOT_FOUND);
-        }
-
         return response()->json($tasks, Response::HTTP_OK);
     }
 
@@ -50,9 +44,7 @@ class TaskController extends Controller
         $task = Task::find($id);
 
         if (! $task) {
-            return response()->json([
-                'message' => 'Task not found',
-            ], Response::HTTP_NOT_FOUND);
+            throw new \Exception('Task not found');
         }
 
         $this->taskService->complete($task);

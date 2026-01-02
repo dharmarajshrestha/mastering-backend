@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Task;
-use Exception;
 
 class TaskService
 {
@@ -22,12 +21,8 @@ class TaskService
 
     public function complete(Task $task): Task
     {
-        if ($task->status === 'completed') {
-            throw new Exception("Task {$task->id} already completed");
-        }
+        $task->complete();
 
-        $task->status = 'completed';
-        
         $task->save();
 
         return $task;
