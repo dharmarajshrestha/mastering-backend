@@ -34,8 +34,6 @@ class TaskController extends Controller
 
         $task = $this->taskService->create($validated);
 
-        Log::info('Task created notification sent.');
-
         return response()->json($task, Response::HTTP_CREATED);
     }
 
@@ -48,8 +46,6 @@ class TaskController extends Controller
         }
 
         $this->taskService->complete($task);
-
-        Log::info('Task completed notification sent');
 
         return response()->json([
             'message' => "Task {$task->id} completed",

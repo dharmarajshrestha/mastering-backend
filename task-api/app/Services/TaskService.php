@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Task;
+use Illuminate\Support\Facades\Log;
 
 class TaskService
 {
@@ -16,7 +17,11 @@ class TaskService
 
     public function create(array $data): Task
     {
-        return Task::create($data);
+        $task = Task::create($data);
+
+        Log::info('Task created notification sent.');
+
+        return $task;
     }
 
     public function complete(Task $task): Task
@@ -24,6 +29,8 @@ class TaskService
         $task->complete();
 
         $task->save();
+
+        Log::info('Task completed notification sent');
 
         return $task;
     }
