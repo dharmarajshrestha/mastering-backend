@@ -30,6 +30,8 @@ class TaskController extends Controller
             'description' => ['required', 'string'],
             'status' => ['required', 'in:pending,completed'],
             'user_id' => ['required', 'integer', 'exists:users,id'],
+            'type' => ['required', 'in:simple,timed,approval,locked'],
+            'due_at' => ['required','date'],
         ]);
 
         $task = $this->taskService->create($validated);

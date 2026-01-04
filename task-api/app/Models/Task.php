@@ -18,7 +18,17 @@ class Task extends Model
         'description',
         'status',
         'user_id',
+        'type',
+        'due_at'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'due_at' => 'datetime',
+            'approved_at' => 'datetime'
+        ];
+    }
 
     public function user(): BelongsTo
     {
@@ -51,5 +61,15 @@ class Task extends Model
         }
 
         $this->name = $name;
+    }
+
+    public function isApproved(): bool
+    {
+        return !!$this->approved_at;
+    }
+
+    public function isDueDatePassed(): bool
+    {
+        return !!($this->due_at && now() > $this->due_at);
     }
 }

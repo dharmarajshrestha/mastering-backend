@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Models\Task;
+use App\Notifications\TaskCreated;
+use App\TaskCompletion\TaskCompletionResolver;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Log;
 
 class TaskService
@@ -10,7 +13,7 @@ class TaskService
     /**
      * Create a new class instance.
      */
-    public function __construct()
+    public function __construct(private TaskCompletionResolver $resolver)
     {
         //
     }
@@ -21,12 +24,16 @@ class TaskService
 
         Log::info('Task created notification sent.');
 
+        Notification::send($task->user, new TaskCreated($task));
+
         return $task;
     }
 
     public function complete(Task $task): Task
     {
-        $task->complete();
+        $resolver = $this->resolver->resolve($task);
+
+        $resolver->complete();
 
         $task->save();
 
