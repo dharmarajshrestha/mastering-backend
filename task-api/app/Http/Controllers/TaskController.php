@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTaskRequest;
 use App\Models\Task;
 use App\Services\TaskService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -23,23 +22,14 @@ class TaskController extends Controller
         return response()->json($tasks, Response::HTTP_OK);
     }
 
-    public function store(Request $request)
+    public function store(StoreTaskRequest $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'min:3', 'max:255', 'unique:tasks,name'],
-            'description' => ['required', 'string'],
-            'status' => ['required', 'in:pending,completed'],
-            'user_id' => ['required', 'integer', 'exists:users,id'],
-            'type' => ['required', 'in:simple,timed,approval,locked'],
-            'due_at' => ['required','date'],
-        ]);
-
-        $task = $this->taskService->create($validated);
+        $task = $this->taskService->create($request->validated());
 
         return response()->json($task, Response::HTTP_CREATED);
     }
 
-    public function markAsComplete(string $id)
+    public function complete(string $id)
     {
         $task = Task::find($id);
 

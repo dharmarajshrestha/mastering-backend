@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use App\Enums\TaskState;
 use Database\Factories\TaskFactory;
+use Exception;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,14 +21,16 @@ class Task extends Model
         'status',
         'user_id',
         'type',
-        'due_at'
+        'due_at',
+        'approved_at'
     ];
 
     protected function casts(): array
     {
         return [
             'due_at' => 'datetime',
-            'approved_at' => 'datetime'
+            'approved_at' => 'datetime',
+            'status' => TaskState::class
         ];
     }
 
@@ -38,24 +41,45 @@ class Task extends Model
 
     public function complete()
     {
-        if (!$this->name) {
-            throw new \Exception(
-                "Task {$this->id} has no title"
-            );
+        if ($this->isLocked()) {
+            throw new Exception('Task must be unlocked to be completed');
         }
 
-        if ($this->status === 'completed') {
+        if ($this->isCompleted()) {
             throw new \Exception(
                 "Task {$this->id} already completed"
             );
         }
 
-        $this->status = 'completed';
+        $this->status = TaskState::COMPLETED;
+    }
+
+    public function lock()
+    {
+        if ($this->isCompleted()) {
+            throw new \Exception('Completed task cannot be locked');
+        }
+
+        if ($this->isLocked()) {
+            throw new \Exception('Task already locked');
+        }
+
+        $this->status = TaskState::LOCKED;
+    }
+
+    public function unlock()
+    {
+        if (!$this->isLocked()) {
+            throw new \Exception('Task already unlocked');
+        }
+
+        $this->status = TaskState::PENDING;
     }
 
     public function rename(string $name)
     {
-        if ($this->status === 'completed') {
+
+        if ($this->isCompleted()) {
             throw new \Exception(
                 "Task {$this->id} already completed. Cannot rename"
             );
@@ -64,13 +88,13 @@ class Task extends Model
         $this->name = $name;
     }
 
-    public function isApproved(): bool
+    public function isCompleted(): bool
     {
-        return !!$this->approved_at;
+        return $this->status === TaskState::COMPLETED;
     }
 
-    public function isDueDatePassed(): bool
+    public function isLocked(): bool
     {
-        return !!($this->due_at && Carbon::now() > $this->due_at);
+        return $this->status === TaskState::LOCKED;
     }
 }

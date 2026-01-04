@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('tasks', function (Blueprint $table) {
             $table->string('type');
             $table->timestamp('due_at')->nullable();
-            $table->timestamp('approved_atf')->nullable();
+            $table->timestamp('approved_at')->nullable();
         });
     }
 
@@ -26,7 +26,6 @@ return new class extends Migration
         Schema::table('tasks', function (Blueprint $table) {
             $table->dropColumn('type');
             $table->dropColumn('due_at');
-            $table->dropColumn('approved_atf');
         });
     }
 };
