@@ -17,7 +17,7 @@ class ApprovalTaskCompletion implements TaskCompletion
 
     public function complete(): void
     {
-        if (!$this->task->approved !== null) {
+        if ($this->task->approved === null) {
             throw new \Exception("Task {$this->task->id} cannot be completed without approval");
         }
 

@@ -17,7 +17,7 @@ class TimedTaskCompletion
 
     public function complete()
     {
-        if ($this->task->due_at < Carbon::now()) {
+        if ($this->task->due_at > Carbon::now()) {
             throw new \Exception("Task {$this->task->id} cannot be completed before due time");
         }
 

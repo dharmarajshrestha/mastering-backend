@@ -36,7 +36,7 @@ class TaskService
         $completionHandler = $this->resolver->resolve($task);
 
         if(!$completionHandler) {
-            throw new \RuntimeException('No handler found for $task');
+            throw new \RuntimeException("No handler found for task ID {$task->id}");
         }
 
         $completionHandler->complete();

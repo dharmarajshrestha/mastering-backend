@@ -24,12 +24,12 @@ class StoreTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:3', 'max:255', 'unique:tasks,name'],
+            'name' => ['required', 'string', 'min:3', 'max:255'],
             'description' => ['required', 'string'],
             'status' => ['required', new Enum(TaskState::class)],
             'user_id' => ['required', 'integer', 'exists:users,id'],
             'type' => ['required', 'in:simple,timed,approval'],
-            'due_at' => ['required', 'date'],
+            'due_at' => ['required', 'date', 'after:now'],
         ];
     }
 }
