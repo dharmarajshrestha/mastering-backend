@@ -22,18 +22,24 @@ class TaskService
     {
         $task = Task::create($data);
 
-        Log::info('Task created notification sent.');
+        if($task->user) {
+            Notification::send($task->user, new TaskCreated($task));
+        }
 
-        Notification::send($task->user, new TaskCreated($task));
+        Log::info('Task created notification sent.');
 
         return $task;
     }
 
     public function complete(Task $task): Task
     {
-        $resolver = $this->resolver->resolve($task);
+        $completionHandler = $this->resolver->resolve($task);
 
-        $resolver->complete();
+        if(!$completionHandler) {
+            throw new \RuntimeException('No handler found for ');
+        }
+
+        $completionHandler->complete();
 
         $task->save();
 

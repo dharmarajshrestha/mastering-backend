@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Database\Factories\TaskFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -70,6 +71,6 @@ class Task extends Model
 
     public function isDueDatePassed(): bool
     {
-        return !!($this->due_at && now() > $this->due_at);
+        return !!($this->due_at && Carbon::now() > $this->due_at);
     }
 }

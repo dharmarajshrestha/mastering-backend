@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class TaskController extends Controller
 {
     public function __construct(
-        public TaskService $taskService
+        private TaskService $taskService
     ) {
         //
     }

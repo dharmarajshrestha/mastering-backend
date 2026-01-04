@@ -16,8 +16,8 @@ class TimedTaskCompletion
 
     public function complete()
     {
-        if ($this->task->isDueDatePassed()) {
-            throw new \Exception('This-> cannot be completed before due time');
+        if (!$this->task->isDueDatePassed()) {
+            throw new \Exception("Task {$this->task->id} cannot be completed before due time");
         }
 
         $this->task->complete();

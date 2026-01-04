@@ -11,13 +11,13 @@ use InvalidArgumentException;
 
 class TaskCompletionResolver
 {
-    public function resolve(Task $task): TaskCompletion
+    public function resolve(Task $task)
     {
         return  match ($task->type) {
             'simple' => new SimpleTaskCompletion($task),
             'timed' => new TimedTaskCompletion($task),
             'approval' => new ApprovalTaskCompletion($task),
-            'default' => throw new \InvalidArgumentException(
+            default => throw new \InvalidArgumentException(
                 "Unknown task type: {$task->type}"
             )
         };

@@ -2,19 +2,20 @@
 
 namespace App\Notifications;
 
+use App\Models\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TaskCreated extends Notification
+class TaskCreated extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(private Task $task)
     {
         //
     }
@@ -35,7 +36,7 @@ class TaskCreated extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('New Task has created for you.')
+            ->line("New Task {$this->task->id} has created for you.")
             ->action('View Task', url('/'))
             ->line('Thank you for using our application!');
     }
